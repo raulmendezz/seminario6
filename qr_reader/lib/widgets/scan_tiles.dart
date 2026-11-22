@@ -32,7 +32,7 @@ class ScanTiles extends StatelessWidget {
           title: Text(scans[i].valor),
           subtitle: Text(scans[i].id.toString()),
           trailing: Icon(Icons.keyboard_arrow_right, color: Colors.grey),
-          onTap: () => print(scans[i].id),
+          onTap: () => launchURL(context, scans[i]),
         ),
       ),
     );

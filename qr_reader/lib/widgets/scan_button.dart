@@ -8,7 +8,7 @@ class ScanButton extends StatelessWidget {
     return FloatingActionButton(
       child: Icon(Icons.filter_center_focus),
       onPressed: () async {
-        final barcodeScanRes = 'https://albertoalemany.com/';
+        final barcodeScanRes = 'geo:38.5,-0.1';
 
         final scanListProvider = Provider.of<ScanListProvider>(
           context,
