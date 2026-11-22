@@ -1,38 +1,30 @@
-import 'dart:io';
+import 'package:latlong2/latlong.dart';
 
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:sqflite/sqflite.dart';
+class ScanModel {
+  int? id;
+  String? tipo;
+  String valor;
 
-class DBProvider {
-  static Database? _database;
-
-  static final DBProvider db = DBProvider._();
-  DBProvider._();
-
-  Future<Database?> get database async {
-    if (_database != null) return _database;
-    _database = await initDB();
-    return _database;
+  ScanModel({this.id, this.tipo, required this.valor}) {
+    if (valor.contains('http')) {
+      tipo = 'http';
+    } else {
+      tipo = 'geo';
+    }
   }
 
-  Future<Database> initDB() async {
-    Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    final path = join(documentsDirectory.path, 'ScansDB.db');
+  // De Map (BD) a objeto
+  factory ScanModel.fromJson(Map<String, dynamic> json) =>
+      ScanModel(id: json["id"], tipo: json["tipo"], valor: json["valor"]);
 
-    return await openDatabase(
-      path,
-      version: 1,
-      onOpen: (db) {},
-      onCreate: (Database db, int version) async {
-        await db.execute('''
-          CREATE TABLE Scans(
-          id INTEGER PRIMARY KEY,
-          tipo TEXT,
-          valor TEXT
-          )
-          ''');
-      },
-    );
+  // De objeto a Map (para insertar/actualizar en la BD)
+  Map<String, dynamic> toJson() => {"id": id, "tipo": tipo, "valor": valor};
+
+  // Para el mapa: de 'geo:15.33,15.66' a LatLng
+  LatLng getLatLng() {
+    final latLng = valor.substring(4).split(',');
+    final lat = double.parse(latLng[0]);
+    final lng = double.parse(latLng[1]);
+    return LatLng(lat, lng);
   }
 }
