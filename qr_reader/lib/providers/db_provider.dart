@@ -107,4 +107,10 @@ class DBProvider {
     final res = await db!.delete('Scans');
     return res;
   }
+
+  Future<int> deleteScansByTipo(String tipo) async {
+    final db = await database;
+    final res = await db!.delete('Scans', where: 'tipo = ?', whereArgs: [tipo]);
+    return res;
+  }
 }

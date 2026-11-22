@@ -8,29 +8,49 @@ class ScanTiles extends StatelessWidget {
 
   const ScanTiles({required this.tipo});
 
+  IconData _iconForTipo() {
+    switch (tipo) {
+      case 'http':
+        return Icons.home_outlined;
+      case 'twitter':
+        return Icons.alternate_email;
+      case 'instagram':
+        return Icons.camera_alt_outlined;
+      case 'geo':
+      default:
+        return Icons.map_outlined;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final scanListProvider = Provider.of<ScanListProvider>(context);
     final scans = scanListProvider.scans;
+
+    if (scans.isEmpty) {
+      return Center(
+        child: Text(
+          'No hay registros de tipo "$tipo"',
+          style: TextStyle(color: Colors.grey),
+        ),
+      );
+    }
 
     return ListView.builder(
       itemCount: scans.length,
       itemBuilder: (_, i) => Dismissible(
         key: UniqueKey(),
         background: Container(color: Colors.red),
-        onDismissed: (DismissDirection direction) {
+        onDismissed: (_) {
           Provider.of<ScanListProvider>(
             context,
             listen: false,
           ).deleteScanById(scans[i].id!);
         },
         child: ListTile(
-          leading: Icon(
-            this.tipo == 'http' ? Icons.home_outlined : Icons.map_outlined,
-            color: Theme.of(context).primaryColor,
-          ),
+          leading: Icon(_iconForTipo(), color: Theme.of(context).primaryColor),
           title: Text(scans[i].valor),
-          subtitle: Text(scans[i].id.toString()),
+          subtitle: Text('ID: ${scans[i].id}'),
           trailing: Icon(Icons.keyboard_arrow_right, color: Colors.grey),
           onTap: () => launchURL(context, scans[i]),
         ),

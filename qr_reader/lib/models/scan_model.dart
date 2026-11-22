@@ -6,7 +6,11 @@ class ScanModel {
   String valor;
 
   ScanModel({this.id, this.tipo, required this.valor}) {
-    if (valor.contains('http')) {
+    if (valor.contains('twitter.com') || valor.contains('x.com')) {
+      tipo = 'twitter';
+    } else if (valor.contains('instagram.com')) {
+      tipo = 'instagram';
+    } else if (valor.contains('http')) {
       tipo = 'http';
     } else {
       tipo = 'geo';
